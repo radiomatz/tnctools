@@ -11,7 +11,7 @@
 #include <getopt.h>
 #include <stdint.h>
 
-#define FROM "NOCALL"
+#define FROM "N0CALL"
 #define KISSUTILHOST "localhost"
 
 
