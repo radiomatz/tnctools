@@ -12,8 +12,8 @@
 #define LNSIZE 128
 #define TOSIZE 30
 
-char *postag_ns  = "4822.17N";
-char *postag_ew  = "01043.09E";
+char *postag_ns  = "00.0000N";
+char *postag_ew  = "000.00E";
 
 #define FROM "N0CALL"
 #define KISSUTILHOST "localhost"
