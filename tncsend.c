@@ -12,10 +12,10 @@
 #define LNSIZE 128
 #define TOSIZE 30
 
-char *postag_ns  = "00.0000N";
-char *postag_ew  = "000.00E";
+char *postag_ns  = "4822.17N";
+char *postag_ew  = "01043.09E";
 
-#define FROM "N0CALL"
+#define FROM "DM2HR-1"
 #define KISSUTILHOST "localhost"
 
 char *symbol    = "/-"; // House QTH VHF
@@ -81,7 +81,7 @@ char *host = KISSUTILHOST;
 		fgets(to, TOSIZE, stdin);
 		
 		len = strlen(to);
-		if ( ( *to == '\r' || *to == '\n' ) && strlen ) { // no input, so save is input copied back
+		if ( ( *to == '\r' || *to == '\n' ) && strlen(tosave) > 0 ) { // no input, so save is input copied back
 			strcpy(to, tosave);
 			len = strlen(tosave);
 		}

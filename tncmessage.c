@@ -11,7 +11,7 @@
 #include <getopt.h>
 #include <stdint.h>
 
-#define FROM "N0CALL"
+#define FROM "DM2HR-1"
 #define KISSUTILHOST "localhost"
 
 
@@ -83,6 +83,10 @@ uint8_t msgnum = 42;
 		memset(to, 0, TOSIZE);
 		printf("\n(%s) >", *tosave ? tosave : "(EMAIL,EMAIL-2,MAIL,SAMAIL,SMS,APTDAB,<CALLSIGN-X>)");
 		fgets(to, TOSIZE, stdin);
+		if ( ( *to == '\r' || *to == '\n' ) && strlen(tosave) > 0 ) { // no input, so save is input copied back
+			strcpy(to, tosave);
+			len = strlen(tosave);
+		}
 
 		len = strlen(to);
 		for ( i = 0; i < len; i++ )
