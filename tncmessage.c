@@ -11,7 +11,7 @@
 #include <getopt.h>
 #include <stdint.h>
 
-#define FROM "DM2HR-1"
+#define FROM "NOCALL"
 #define KISSUTILHOST "localhost"
 
 
