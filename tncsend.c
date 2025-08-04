@@ -15,7 +15,7 @@
 char *postag_ns  = "4822.17N";
 char *postag_ew  = "01043.09E";
 
-#define FROM "DM2HR-1"
+#define FROM "N0CALL"
 #define KISSUTILHOST "localhost"
 
 char *symbol    = "/-"; // House QTH VHF
