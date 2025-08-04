@@ -9,7 +9,7 @@ tncmessage is for text messages without position tags, for example for LoRa devi
 ____________________________________
 
 get tools:<br/>
-	git clone https://github.com/radiomatz/tnctools.gi
+	git clone https://github.com/radiomatz/tnctools.git
 	
 	change your callsign and postags_ns, postags_ew in tncsend.c
 	
