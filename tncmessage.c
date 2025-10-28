@@ -11,8 +11,9 @@
 #include <getopt.h>
 #include <stdint.h>
 
-#define FROM "DM2HR-1"
-#define KISSUTILHOST "localhost"
+// change THIS TO YOUR CALLSIGN / kissutil-host
+#define FROM 		"DM2HR"
+#define KISSUTILHOST 	"localhost"
 
 
 #define LNSIZE 128
@@ -25,11 +26,10 @@ extern int optind, opterr, optopt;
 int main ( int argc, char *argv[] ) {
 FILE *fp;
 int outfd = 1;
-char line[LNSIZE];
+char line[LNSIZE], linesave[LNSIZE];
 int i, len, opt, debug = 0;
 char *comma = "";
-char to[TOSIZE];
-char tosave[TOSIZE];
+char to[TOSIZE], tosave[TOSIZE];
 char pipecmd[128];
 char *from = FROM;
 char *host = KISSUTILHOST;
@@ -38,6 +38,7 @@ uint8_t msgnum = 42;
 	memset(to, 0, TOSIZE);
 	memset(tosave, 0, TOSIZE);
 	memset(line, 0, LNSIZE);
+	memset(linesave, 0, LNSIZE);
 
         while ((opt = getopt (argc, argv, "h:f:d")) != -1) {
                 switch (opt) {
@@ -99,13 +100,19 @@ uint8_t msgnum = 42;
 		for ( i = 0; i < len; i++ )
 			to[i] = toupper(to[i]);
 		strcpy(tosave, to); // saving for later laziness
+
 		
 		memset(line, 0, LNSIZE);
 		printf("message>");
 		fgets(line, LNSIZE, stdin);
+		// no input, so saved input is copied back
+		if ( ( *line == '\r' || *line == '\n' ) && strlen(linesave) > 0 ) { 
+			strcpy(line, linesave);
+		}
 		for ( i = 0; i < strlen(line); i++ )
 			if ( line[i] == 0x0d || line[i] == 0x0a )
 				line[i] = 0;
+		strcpy(linesave, line);
 
 		fputs("[0] ", fp);
 		fputs(from, fp);
@@ -129,6 +136,7 @@ uint8_t msgnum = 42;
 		// comment (text)
 		fputc(':', fp);
 		fputs(line, fp);
+		strcpy(linesave, line);
 
 		// Message Number (fake)
                 for(i = 0; i < strlen(from); i++)
