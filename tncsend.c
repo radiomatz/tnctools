@@ -15,7 +15,7 @@
 char *postag_ns  = "4822.17N";
 char *postag_ew  = "01043.09E";
 
-#define FROM "DM2HR-1"
+#define FROM "DM2HR"
 #define KISSUTILHOST "localhost"
 
 char *symbol    = "/-"; // House QTH VHF
@@ -24,10 +24,9 @@ char *symbol    = "/-"; // House QTH VHF
 int main ( int argc, char *argv[] ) {
 FILE *fp;
 int outfd = 1;
-char line[LNSIZE];
-int i, j, len, opt, debug = 0, uppercase = 0;
-char to[TOSIZE];
-char tosave[TOSIZE];
+char line[LNSIZE], linesave[LNSIZE];
+int i, j, len, opt, debug = 0, uppercase = 0, satellite = 0;
+char to[TOSIZE], tosave[TOSIZE];
 char pipecmd[128];
 char *from = FROM;
 char *host = KISSUTILHOST;
@@ -35,8 +34,9 @@ char *host = KISSUTILHOST;
 	memset(to, 0, TOSIZE);
 	memset(tosave, 0, TOSIZE);
 	memset(line, 0, LNSIZE);
+	memset(linesave, 0, LNSIZE);
 
-        while ((opt = getopt (argc, argv, "h:f:du")) != -1) {
+        while ((opt = getopt (argc, argv, "h:f:dus")) != -1) {
                 switch (opt) {
                         case 'h':
                                 host = optarg;
@@ -56,6 +56,10 @@ char *host = KISSUTILHOST;
 				uppercase = 1;
                                 break;
 
+                        case 's':
+				satellite = 1;
+                                break;
+
                          default:
                                 fprintf(stderr, "\nusage:\n    %s [-h kissutil-host] [-f <from-callsign-x] [-d(debug)] [-u(uppercase message)] [VIA [VIA...]]\n\n", argv[0]);
                                 break;
@@ -65,7 +69,8 @@ char *host = KISSUTILHOST;
 	if ( debug == 0 ) {
 		strcpy(pipecmd, "kissutil -h ");
 		strcat(pipecmd, host);
-		strcat(pipecmd, " >/dev/null");
+		if ( satellite != 1 )
+			strcat(pipecmd, " >/dev/null");
 		fprintf(stderr, "pipe cmd=%s\n", pipecmd);
 		fp = popen(pipecmd, "w");
 	} else {
@@ -96,6 +101,16 @@ char *host = KISSUTILHOST;
 		memset(line, 0, LNSIZE);
 		printf("message>");
 		fgets(line, LNSIZE, stdin);
+		// no input, so saved input is copied back
+		if ( ( *line == '\r' || *line == '\n' ) && strlen(linesave) > 0 ) { 
+			strcpy(line, linesave);
+		}
+		for ( i = 0; i < strlen(line); i++ )
+			if ( line[i] == 0x0d || line[i] == 0x0a )
+				line[i] = 0;
+		strcpy(linesave, line);
+
+
 		if ( uppercase == 1 ) {
 		        for ( i = 0; i < strlen(line); i++ )
 			        line[i] = toupper(line[i]);
@@ -137,6 +152,9 @@ char *host = KISSUTILHOST;
 		len = strlen(line);
 		for ( i = 0; i < len; i++ )
 			fputc(line[i], fp);
+
+		fputc('\n', fp);
+
 		fflush(fp);
 	} while ( strlen(line) > 0 );
 
